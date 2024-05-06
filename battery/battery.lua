@@ -2,7 +2,7 @@ local wibox = require("wibox")
 local awful = require("awful")
 
 local function worker(widget, stdout)
-  local percent = stdout:match("%d%d%%")
+  local percent = stdout:match("%d+%%")
   
   if stdout:find("Discharging") then
   else

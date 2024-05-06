@@ -31,6 +31,8 @@ if awesome.startup_errors then
     })
 end
 
+
+
 -- Handle runtime errors after startup
 do
     local in_error = false
@@ -578,6 +580,8 @@ client.connect_signal("request::titlebars", function(c)
         layout = wibox.layout.align.horizontal
     }
 end)
+
+awful.spawn("flameshot");
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
