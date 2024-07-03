@@ -574,6 +574,8 @@ client.connect_signal("request::titlebars", function(c)
     }
 end)
 
+awful.spawn("flameshot");
+
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", { raise = false })
