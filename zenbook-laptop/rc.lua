@@ -18,6 +18,8 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 local battery = require("common/battery/battery")
+local emoji_selector = require("common.emoji_selector")
+
 -- local p_widget = require("powerprofile")
 
 -- {{{ Error handling
@@ -341,7 +343,7 @@ globalkeys = gears.table.join(
   awful.key({}, "F7", function() awful.util.spawn_with_shell("/home/nandor/toggle.sh && /home/nandor/map-output.sh") end),
   awful.key({}, "Print", function() awful.spawn("flameshot gui") end),
   awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end, { description = "lock screen", group = "awesome" }),
-  awful.key({ modkey, }, "e", function() awful.spawn.with_shell("BEMENU_OPTS='--tf \"#7e5edc\" --hf \"#7e5edc\" --bdr \"#7e5edc\" -l 10 -p emoji -c -W 0.4 -B 4 --fn \"Monospace 25\"' BEMOJI_PICKER_CMD=bemenu bemoji -t") end, { description = "type emoji", group = "misc" })
+  emoji_selector.create_keybinding({ modkey }, "e", "select emoji")
 )
 
 clientkeys = gears.table.join(
