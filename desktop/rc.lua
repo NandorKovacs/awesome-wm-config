@@ -17,6 +17,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
+local battery = require("battery/battery")
 
 awful.screen.set_auto_dpi_enabled(true)
 -- {{{ Error handling
@@ -29,6 +30,8 @@ if awesome.startup_errors then
         text = awesome.startup_errors
     })
 end
+
+
 
 -- Handle runtime errors after startup
 do
@@ -221,8 +224,11 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         {             -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
+            wibox.widget.textbox("  "),
             wibox.widget.systray(),
+            wibox.widget.textbox(" | "),
+            battery,
+            mykeyboardlayout,
             mytextclock,
             s.mylayoutbox,
         },
@@ -242,7 +248,8 @@ root.buttons(gears.table.join(
 globalkeys = gears.table.join(
     awful.key({}, "Print", function() awful.spawn("flameshot gui -c") end,
         { description = "flameshot snippet tool", group = "awesome" }),
-    awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end, {description = "lock screen", group = "awesome"}),
+    awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
+        { description = "lock screen", group = "awesome" }),
     awful.key({ modkey, }, "s", hotkeys_popup.show_help,
         { description = "show help", group = "awesome" }),
     awful.key({ modkey, }, "Left", awful.tag.viewprev,
@@ -476,7 +483,7 @@ awful.rules.rules = {
     {
         rule_any = {
             instance = {
-                "DTA", -- Firefox addon DownThemAll.
+                "DTA",   -- Firefox addon DownThemAll.
                 "copyq", -- Includes session name in class.
                 "pinentry",
             },
@@ -485,7 +492,7 @@ awful.rules.rules = {
                 "Blueman-manager",
                 "Gpick",
                 "Kruler",
-                "MessageWin", -- kalarm.
+                "MessageWin",  -- kalarm.
                 "Sxiv",
                 "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
                 "Wpa_gui",
@@ -498,9 +505,9 @@ awful.rules.rules = {
                 "Event Tester", -- xev.
             },
             role = {
-                "AlarmWindow", -- Thunderbird's calendar.
+                "AlarmWindow",   -- Thunderbird's calendar.
                 "ConfigManager", -- Thunderbird's about:config.
-                "pop-up",  -- e.g. Google Chrome's (detached) Developer Tools.
+                "pop-up",        -- e.g. Google Chrome's (detached) Developer Tools.
             }
         },
         properties = { floating = true }
