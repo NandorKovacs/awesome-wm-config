@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "workspace": {
+    "library": [
+      "/usr/share/awesome/lib"
+    ],
+    "checkThirdParty": false
+  },
+  "diagnostics": {
+    "globals": ["awesome", "client", "root", "screen"]
+  }
+}
