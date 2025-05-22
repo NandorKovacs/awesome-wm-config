@@ -5,7 +5,7 @@ local M = {}
 -- Default configuration for the emoji selector
 M.config = {
     bemenu_opts = 'BEMENU_OPTS=\'--tf "#7e5edc" --hf "#7e5edc" --bdr "#7e5edc" -l 10 -p emoji -c -W 0.4 -B 4 --fn "Monospace 25"\'',
-    bemoji_opts = '-t',
+    bemoji_opts = '-t -f ~/.config/awesome/common/emoji_selector/emojis.txt',
     bemoji_picker_cmd = 'BEMOJI_PICKER_CMD=bemenu'
 }
 
