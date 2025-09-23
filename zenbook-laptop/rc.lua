@@ -169,7 +169,7 @@ local function set_wallpaper(s)
       wallpaper = wallpaper(s)
     else
       local theme_assets = require("beautiful.theme_assets")
-      local wallpaper = theme_assets.wallpaper(
+      wallpaper = theme_assets.wallpaper(
         "#465457",
         "#888a85",
         "#7e5edc",
