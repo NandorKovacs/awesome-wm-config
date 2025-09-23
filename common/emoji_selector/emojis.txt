@@ -329,7 +329,7 @@
 🫵🏽 index pointing at the viewer: medium skin tone
 🫵🏾 index pointing at the viewer: medium-dark skin tone
 🫵🏿 index pointing at the viewer: dark skin tone
-👍 thumbs up
+👍 thumbs up +1
 👍🏻 thumbs up: light skin tone
 👍🏼 thumbs up: medium-light skin tone
 👍🏽 thumbs up: medium skin tone
