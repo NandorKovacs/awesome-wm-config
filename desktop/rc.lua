@@ -17,7 +17,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
-local battery = require("battery/battery")
+local emoji_selector = require("common.emoji_selector")
 
 awful.screen.set_auto_dpi_enabled(true)
 -- {{{ Error handling
@@ -227,7 +227,6 @@ awful.screen.connect_for_each_screen(function(s)
             wibox.widget.textbox("  "),
             wibox.widget.systray(),
             wibox.widget.textbox(" | "),
-            battery,
             mykeyboardlayout,
             mytextclock,
             s.mylayoutbox,
@@ -250,6 +249,7 @@ globalkeys = gears.table.join(
         { description = "flameshot snippet tool", group = "awesome" }),
     awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
         { description = "lock screen", group = "awesome" }),
+    emoji_selector.create_keybinding({ modkey }, "e", "select emoji"),
     awful.key({ modkey, }, "s", hotkeys_popup.show_help,
         { description = "show help", group = "awesome" }),
     awful.key({ modkey, }, "Left", awful.tag.viewprev,
