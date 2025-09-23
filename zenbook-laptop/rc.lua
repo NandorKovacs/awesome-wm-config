@@ -53,7 +53,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "gtk/theme.lua")
+beautiful.init(gears.filesystem.get_themes_dir() .. "xresources/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "kgx"
@@ -68,7 +68,7 @@ editor_cmd = terminal .. " -e " .. editor
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-awful.layout.layouts = {
+awful.layout.append_default_layouts({
   awful.layout.suit.tile,
   awful.layout.suit.tile.left,
   awful.layout.suit.tile.bottom,
@@ -85,7 +85,7 @@ awful.layout.layouts = {
   -- awful.layout.suit.corner.ne,
   -- awful.layout.suit.corner.sw,
   -- awful.layout.suit.corner.se,
-}
+})
 -- }}}
 
 -- {{{ Menu
@@ -167,8 +167,16 @@ local function set_wallpaper(s)
     -- If wallpaper is a function, call it with the screen
     if type(wallpaper) == "function" then
       wallpaper = wallpaper(s)
+    else
+      local theme_assets = require("beautiful.theme_assets")
+      local wallpaper = theme_assets.wallpaper(
+        "#465457",
+        "#888a85",
+        "#7e5edc",
+        s
+      )
     end
-    gears.wallpaper.maximized(wallpaper, s, true)
+    gears.wallpaper.maximized(wallpaper, s)
   end
 end
 
@@ -180,7 +188,7 @@ awful.screen.connect_for_each_screen(function(s)
   set_wallpaper(s)
 
   -- Each screen has its own tag table.
-  awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+  awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.suit.tile)
 
   -- Create a promptbox for each screen
   s.mypromptbox = awful.widget.prompt()
@@ -342,7 +350,8 @@ globalkeys = gears.table.join(
     { description = "show the menubar", group = "launcher" }),
   awful.key({}, "F7", function() awful.util.spawn_with_shell("/home/nandor/toggle.sh && /home/nandor/map-output.sh") end),
   awful.key({}, "Print", function() awful.spawn("flameshot gui") end),
-  awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end, { description = "lock screen", group = "awesome" }),
+  awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
+    { description = "lock screen", group = "awesome" }),
   emoji_selector.create_keybinding({ modkey }, "e", "select emoji")
 )
 
