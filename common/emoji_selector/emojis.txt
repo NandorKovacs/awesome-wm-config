@@ -233,12 +233,12 @@
 🫸🏽 rightwards pushing hand: medium skin tone
 🫸🏾 rightwards pushing hand: medium-dark skin tone
 🫸🏿 rightwards pushing hand: dark skin tone
-👌 OK hand
-👌🏻 OK hand: light skin tone
-👌🏼 OK hand: medium-light skin tone
-👌🏽 OK hand: medium skin tone
-👌🏾 OK hand: medium-dark skin tone
-👌🏿 OK hand: dark skin tone
+👌 OK hand ok hand
+👌🏻 OK hand ok hand: light skin tone
+👌🏼 OK hand ok hand: medium-light skin tone
+👌🏽 OK hand ok hand: medium skin tone
+👌🏾 OK hand ok hand: medium-dark skin tone
+👌🏿 OK hand ok hand: dark skin tone
 🤌 pinched fingers
 🤌🏻 pinched fingers: light skin tone
 🤌🏼 pinched fingers: medium-light skin tone
