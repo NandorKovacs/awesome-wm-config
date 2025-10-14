@@ -350,7 +350,7 @@ globalkeys = gears.table.join(
     { description = "show the menubar", group = "launcher" }),
   awful.key({}, "F7", function() awful.util.spawn_with_shell("/home/nandor/toggle.sh && /home/nandor/map-output.sh") end),
   awful.key({}, "Print", function() awful.spawn("flameshot gui") end),
-  awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
+  awful.key({ modkey, }, "BackSpace", function() awful.spawn("systemctl suspend") end,
     { description = "lock screen", group = "awesome" }),
   emoji_selector.create_keybinding({ modkey }, "e", "select emoji")
 )
