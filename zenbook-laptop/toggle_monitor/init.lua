@@ -46,6 +46,11 @@ function M.toggle()
     end)
 end
 
+-- Add button bindings to make the widget clickable
+monitor_widget:buttons(gears.table.join(
+    awful.button({}, 1, function() M.toggle() end)
+))
+
 -- Initialize the icon on startup
 update_icon()
 
