@@ -19,6 +19,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 local battery = require("common/battery/battery")
 local emoji_selector = require("common.emoji_selector")
+local toggle_monitor = require("toggle_monitor")
 
 -- local p_widget = require("powerprofile")
 
@@ -232,6 +233,7 @@ awful.screen.connect_for_each_screen(function(s)
       wibox.widget.textbox("  "),
       wibox.widget.systray(),
       wibox.widget.textbox(" | "),
+      toggle_monitor.widget,
       battery,
       mykeyboardlayout,
       mytextclock,
@@ -348,7 +350,8 @@ globalkeys = gears.table.join(
   -- Menubar
   awful.key({ modkey }, "p", function() menubar.show() end,
     { description = "show the menubar", group = "launcher" }),
-  awful.key({}, "F7", function() awful.util.spawn_with_shell("/home/nandor/toggle.sh && /home/nandor/map-output.sh") end),
+  awful.key({}, "F7", function() toggle_monitor.toggle() end,
+    { description = "toggle monitor", group = "awesome" }),
   awful.key({}, "Print", function() awful.spawn("flameshot gui") end),
   awful.key({ modkey, }, "BackSpace", function() awful.spawn("systemctl suspend") end,
     { description = "lock screen", group = "awesome" }),
