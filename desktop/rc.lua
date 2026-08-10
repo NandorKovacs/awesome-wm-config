@@ -245,7 +245,7 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
-    awful.key({}, "Print", function() awful.spawn("flameshot gui -c") end,
+    awful.key({}, "Print", function() awful.spawn("flameshot gui") end,
         { description = "flameshot snippet tool", group = "awesome" }),
     awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
         { description = "lock screen", group = "awesome" }),
