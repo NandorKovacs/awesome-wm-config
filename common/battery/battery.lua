@@ -4,13 +4,21 @@ local gears = require("gears")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
 local function worker(widget, stdout)
-  local percent = stdout:match("%d+%%")
+  local status, percentnum
+  for line in stdout:gmatch("[^\r\n]+") do
+    local s, p = line:match("^BAT%d+ (%a[%a ]-) (%d+)$")
+    if s then
+      status, percentnum = s, tonumber(p)
+      break
+    end
+  end
+  if not status then return end
+  local percent = percentnum .. "%"
   local purple = "#7e5edc"
   local red = "#c3512a"
   local black = "#000000"
   local low = false
-  if stdout:find("Discharging") then
-    local percentnum = tonumber(percent:match("%d+"))
+  if status == "Discharging" then
     if percentnum < 15 then
       low = true
       if (percentnum < 6) then
@@ -40,4 +48,8 @@ local function worker(widget, stdout)
   widget:set_text(percent)  
 end
 
-return awful.widget.watch('acpi', 5, worker)
+-- read sysfs instead of acpi: phantom HID batteries (e.g. ELAN touchscreens)
+-- pollute acpi output indistinguishably, but real batteries are named BAT*
+return awful.widget.watch({'sh', '-c',
+  'for b in /sys/class/power_supply/BAT*; do printf "%s %s %s\\n" "${b##*/}" "$(cat "$b/status")" "$(cat "$b/capacity")"; done'},
+  5, worker)
