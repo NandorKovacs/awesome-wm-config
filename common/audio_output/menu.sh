@@ -15,6 +15,7 @@ max=${AUDIO_OUTPUT_MAX:-100}
 cells=${AUDIO_OUTPUT_BAR_CELLS:-10}
 prompt=${AUDIO_OUTPUT_PROMPT:-output}
 name_max=${AUDIO_OUTPUT_NAME_MAX:-32}
+track=${AUDIO_OUTPUT_TRACK:-#333333}    # colour of the unfilled part of a bar
 
 # One line per sink: name <TAB> volume <TAB> yes|no (muted) <TAB> description
 list_sinks() {
@@ -70,20 +71,34 @@ done < <(list_sinks)
 
 printf '\0prompt\x1f%s\n' "$prompt"
 printf '\0message\x1f%s\n' "←→ volume   alt+m mute   ⏎ set default   esc close"
-printf '\0markup-rows\x1ffalse\n'
+printf '\0markup-rows\x1ftrue\n'
 printf '\0no-custom\x1ftrue\n'
 printf '\0use-hot-keys\x1ftrue\n'
 printf '\0keep-selection\x1ftrue\n'
 printf '\0keep-filter\x1ftrue\n'
 
+# blocks filled 1/8 .. 7/8 from the left, indexed by the number of eighths
+partials=("" "▏" "▎" "▍" "▌" "▋" "▊" "▉")
+
 for i in "${!names[@]}"; do
     vol=${vols[i]}
     shown=$vol
     [ "$shown" -gt 100 ] && shown=100
-    filled=$(((shown * cells + 50) / 100))
+    # the bar is drawn in eighths of a cell: full blocks, one partial block
+    # for the remainder, then spaces; the track colour behind it shows through
+    # the unfilled part
+    eighths=$(((shown * cells * 8 + 50) / 100))
+    filled=$((eighths / 8))
+    rest=$((eighths % 8))
     bar=
     for ((c = 0; c < cells; c++)); do
-        if [ "$c" -lt "$filled" ]; then bar+="█"; else bar+="░"; fi
+        if [ "$c" -lt "$filled" ]; then
+            bar+="█"
+        elif [ "$c" -eq "$filled" ] && [ "$rest" -gt 0 ]; then
+            bar+=${partials[rest]}
+        else
+            bar+=" "
+        fi
     done
 
     if [ "${mutes[i]}" = yes ]; then
@@ -102,7 +117,13 @@ for i in "${!names[@]}"; do
     padding=
     for ((c = 0; c < pad; c++)); do padding+=" "; done
 
-    # muted rows are flagged "urgent"; the theme draws those dimmed
-    printf '%s%s%s  %s%s\0info\x1f%s\x1furgent\x1f%s\n' \
-        "$marker" "$desc" "$padding" "$bar" "$label" "${names[i]}" "$urgent"
+    # The row text is the plain name, which is what typing filters on; what is
+    # shown is the "display" markup. Muted rows are flagged "urgent"; the theme
+    # draws those dimmed.
+    esc=${desc//&/&amp;}
+    esc=${esc//</&lt;}
+    esc=${esc//>/&gt;}
+    printf '%s\0info\x1f%s\x1furgent\x1f%s\x1fdisplay\x1f%s%s%s  <span background="%s">%s</span>%s\n' \
+        "$desc" "${names[i]}" "$urgent" \
+        "$marker" "$esc" "$padding" "$track" "$bar" "$label"
 done
