@@ -2,6 +2,20 @@
  * --tf/--hf/--bdr "#7e5edc", -l 10 -c -W 0.4 -B 4, --fn "Monospace 25".
  * init.lua runs rofi with -dpi 96 so the font size matches bemenu's. */
 
+/* Super+number is awesome's tag switching; do not let it pick rows here. */
+configuration {
+    kb-select-1:  "";
+    kb-select-2:  "";
+    kb-select-3:  "";
+    kb-select-4:  "";
+    kb-select-5:  "";
+    kb-select-6:  "";
+    kb-select-7:  "";
+    kb-select-8:  "";
+    kb-select-9:  "";
+    kb-select-10: "";
+}
+
 * {
     accent: #7e5edc;
     bg:     #121212;
