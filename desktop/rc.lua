@@ -247,6 +247,22 @@ root.buttons(gears.table.join(
 globalkeys = gears.table.join(
     awful.key({}, "Print", function() awful.spawn("flameshot gui") end,
         { description = "flameshot snippet tool", group = "awesome" }),
+    -- Media keys (keyboard, Bluetooth AVRCP and USB headset buttons) -> MPRIS.
+    -- Bluetooth headsets send Play and Pause as separate keys; both toggle.
+    awful.key({}, "XF86AudioPlay", function() awful.spawn("playerctl play-pause", false) end,
+        { description = "play/pause", group = "media" }),
+    awful.key({}, "XF86AudioPause", function() awful.spawn("playerctl play-pause", false) end,
+        { description = "play/pause", group = "media" }),
+    awful.key({}, "XF86AudioNext", function() awful.spawn("playerctl next", false) end,
+        { description = "next track", group = "media" }),
+    awful.key({}, "XF86AudioPrev", function() awful.spawn("playerctl previous", false) end,
+        { description = "previous track", group = "media" }),
+    awful.key({}, "XF86AudioRaiseVolume",
+        function() awful.spawn("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+", false) end,
+        { description = "volume up", group = "media" }),
+    awful.key({}, "XF86AudioLowerVolume",
+        function() awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-", false) end,
+        { description = "volume down", group = "media" }),
     awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
         { description = "lock screen", group = "awesome" }),
     emoji_selector.create_keybinding({ modkey }, "e", "select emoji"),
