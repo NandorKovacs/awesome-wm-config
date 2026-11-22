@@ -18,6 +18,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 local emoji_selector = require("common.emoji_selector")
+local audio_output = require("common.audio_output")
 
 awful.screen.set_auto_dpi_enabled(true)
 -- {{{ Error handling
@@ -225,6 +226,8 @@ awful.screen.connect_for_each_screen(function(s)
         {             -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.textbox("  "),
+            audio_output.widget(),
+            wibox.widget.textbox(" | "),
             wibox.widget.systray(),
             wibox.widget.textbox(" | "),
             mykeyboardlayout,
@@ -269,6 +272,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey, }, "BackSpace", function() awful.spawn("xsecurelock") end,
         { description = "lock screen", group = "awesome" }),
     emoji_selector.create_keybinding({ modkey }, "e", "select emoji"),
+    audio_output.create_keybinding({ modkey }, "b", "audio output menu"),
     awful.key({ modkey, }, "s", hotkeys_popup.show_help,
         { description = "show help", group = "awesome" }),
     awful.key({ modkey, }, "Left", awful.tag.viewprev,
