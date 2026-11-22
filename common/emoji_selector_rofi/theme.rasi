@@ -1,0 +1,72 @@
+/* Emoji picker, styled after the bemenu emoji selector:
+ * --tf/--hf/--bdr "#7e5edc", -l 10 -c -W 0.4 -B 4, --fn "Monospace 25".
+ * init.lua runs rofi with -dpi 96 so the font size matches bemenu's. */
+
+* {
+    accent: #7e5edc;
+    bg:     #121212;
+    fg:     #cacaca;
+
+    font:             "Monospace 25";
+    background-color: @bg;
+    text-color:       @fg;
+    margin:           0;
+    padding:          0;
+    spacing:          0;
+    border:           0;
+}
+
+window {
+    location:     center;
+    anchor:       center;
+    width:        40%;
+    border:       4px;
+    border-color: @accent;
+    padding:      0px 8px 4px 8px;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    spacing:  0.5em;
+}
+
+prompt {
+    text-color: @accent;
+}
+
+listview {
+    lines:        10;
+    fixed-height: false;
+    dynamic:      true;
+    scrollbar:    false;
+    cycle:        true;
+    border:       0;
+}
+
+element {
+    children: [ element-text ];
+    border:   0;
+}
+
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+    highlight:        none;   /* no bold/underline on the matched text, like bemenu */
+}
+
+/* every state is listed so rofi's built-in defaults cannot leak through */
+element normal.normal, element alternate.normal,
+element normal.active, element alternate.active,
+element normal.urgent, element alternate.urgent {
+    background-color: @bg;
+    text-color:       @fg;
+}
+
+element selected.normal, element selected.active, element selected.urgent {
+    background-color: @bg;
+    text-color:       @accent;
+}
