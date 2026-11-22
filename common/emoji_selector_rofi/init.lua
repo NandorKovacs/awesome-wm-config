@@ -1,10 +1,11 @@
 -- Emoji selector, rofi variant: bemoji with rofi as the picker instead of
--- bemenu, styled the same (see theme.rasi). Independent of
--- common.emoji_selector, except that it uses that module's emojis.txt.
+-- bemenu, using the shared rofi look from common.rofi. Uses the emojis.txt of
+-- common.emoji_selector.
 --
 -- Requires bemoji and rofi.
 
 local awful = require("awful")
+local rofi = require("common.rofi")
 
 local M = {}
 
@@ -15,8 +16,6 @@ M.config = {
     prompt = "emoji",
     bemoji_opts = { "-tnc" }, -- -t type the emoji, -n no newline, -c copy to clipboard
     emoji_file = dir .. "../emoji_selector/emojis.txt",
-    theme = dir .. "theme.rasi",
-    dpi = 96,                 -- bemenu ignores the screen dpi; match it. nil = rofi default
 }
 
 -- Customize the configuration
@@ -33,10 +32,7 @@ function M.open()
     -- the theme path) may contain spaces
     -- -sync: read the whole list before showing the window, otherwise it opens
     -- empty and grows a frame later
-    local picker = "rofi -dmenu -sync -i -p " .. c.prompt .. " -theme " .. c.theme
-    if c.dpi then
-        picker = picker .. " -dpi " .. c.dpi
-    end
+    local picker = table.concat(rofi.command(), " ") .. " -dmenu -sync -i -p " .. c.prompt
     local cmd = { "env", "BEMOJI_PICKER_CMD=" .. picker, "bemoji" }
     for _, opt in ipairs(c.bemoji_opts) do
         table.insert(cmd, opt)

@@ -1,6 +1,11 @@
-/* Emoji picker, styled after the bemenu emoji selector:
- * --tf/--hf/--bdr "#7e5edc", -l 10 -c -W 0.4 -B 4, --fn "Monospace 25".
- * init.lua runs rofi with -dpi 96 so the font size matches bemenu's. */
+/* Shared look for all rofi menus (see init.lua), styled after the bemenu
+ * emoji selector: --tf/--hf/--bdr "#7e5edc", -l 10 -c -W 0.4 -B 4,
+ * --fn "Monospace 25". init.lua runs rofi with -dpi 96 so the font size
+ * matches bemenu's.
+ *
+ * Conventions menus can rely on:
+ *   - rows flagged "urgent" are drawn dimmed (e.g. muted outputs)
+ *   - a message, if the menu sets one, is shown as a small hint line below */
 
 /* Super+number is awesome's tag switching; do not let it pick rows here. */
 configuration {
@@ -20,6 +25,7 @@ configuration {
     accent: #7e5edc;
     bg:     #121212;
     fg:     #cacaca;
+    dim:    #6b6b6b;
 
     font:             "Monospace 25";
     background-color: @bg;
@@ -40,7 +46,7 @@ window {
 }
 
 mainbox {
-    children: [ inputbar, listview ];
+    children: [ inputbar, listview, message ];
 }
 
 inputbar {
@@ -74,13 +80,28 @@ element-text {
 
 /* every state is listed so rofi's built-in defaults cannot leak through */
 element normal.normal, element alternate.normal,
-element normal.active, element alternate.active,
-element normal.urgent, element alternate.urgent {
+element normal.active, element alternate.active {
     background-color: @bg;
     text-color:       @fg;
+}
+
+/* rows flagged urgent are dimmed */
+element normal.urgent, element alternate.urgent {
+    background-color: @bg;
+    text-color:       @dim;
 }
 
 element selected.normal, element selected.active, element selected.urgent {
     background-color: @bg;
     text-color:       @accent;
+}
+
+message {
+    border:  0;
+    padding: 0;
+}
+
+textbox {
+    font:       "Monospace 12";
+    text-color: @dim;
 }

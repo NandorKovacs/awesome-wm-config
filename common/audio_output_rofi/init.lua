@@ -1,15 +1,16 @@
 -- Audio output switcher, rofi variant: a wibar widget showing the default
--- output and its volume, plus a rofi menu (menu.sh + theme.rasi) styled like
--- the bemenu emoji selector. Independent of common.audio_output.
+-- output and its volume, plus a rofi menu (menu.sh) using the shared rofi
+-- look from common.rofi.
 --
 -- Menu keys: Up/Down select, Left/Right change that output's volume,
 -- Alt+m mute, Enter make default, Escape close. Typing filters the list.
 --
--- Requires rofi. Colours, font and size live in theme.rasi.
+-- Requires rofi. Colours, font and size live in common/rofi/theme.rasi.
 
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
+local rofi = require("common.rofi")
 
 local M = {}
 
@@ -23,8 +24,6 @@ M.config = {
     bar_cells = 10,
     menu_name_length = 32,    -- max characters of an output name in the menu
     bar_name_length = 28,     -- max characters of the output name shown in the wibar
-    dpi = 96,                 -- bemenu ignores the screen dpi; match it. nil = rofi default
-    theme = dir .. "theme.rasi",
     script = dir .. "menu.sh",
     key_volume_down = "Left",
     key_volume_up = "Right",
@@ -123,27 +122,28 @@ function M.open()
         "AUDIO_OUTPUT_BAR_CELLS=" .. c.bar_cells,
         "AUDIO_OUTPUT_PROMPT=" .. c.prompt,
         "AUDIO_OUTPUT_NAME_MAX=" .. c.menu_name_length,
-        "rofi",
+    }
+    for _, arg in ipairs(rofi.command()) do
+        table.insert(cmd, arg)
+    end
+    for _, arg in ipairs {
         "-show", "audio",
         "-modi", "audio:" .. c.script,
-        "-theme", c.theme,
         -- free Left/Right from moving the filter cursor (Ctrl+b / Ctrl+f still do)
         "-kb-move-char-back", "Control+b",
         "-kb-move-char-forward", "Control+f",
         "-kb-custom-1", c.key_volume_down,
         "-kb-custom-2", c.key_volume_up,
         "-kb-custom-3", c.key_mute,
-    }
+    } do
+        table.insert(cmd, arg)
+    end
     -- start on the current default output (rows are in `pactl list sinks` order)
     for i, s in ipairs(sinks) do
         if s.name == default_name then
             table.insert(cmd, "-selected-row")
             table.insert(cmd, tostring(i - 1))
         end
-    end
-    if c.dpi then
-        table.insert(cmd, "-dpi")
-        table.insert(cmd, tostring(c.dpi))
     end
     local pid = awful.spawn.easy_async(cmd, function()
         menu_pid = nil
