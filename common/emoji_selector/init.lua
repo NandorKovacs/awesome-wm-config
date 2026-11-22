@@ -1,44 +1,50 @@
+-- Emoji selector: bemoji with rofi as the picker, using the shared rofi look
+-- from common.rofi.
+--
+-- Requires bemoji and rofi.
+
 local awful = require("awful")
+local rofi = require("common.rofi")
 
 local M = {}
 
--- Default configuration for the emoji selector
+-- directory of this module, with trailing slash
+local dir = debug.getinfo(1, "S").source:match("^@(.*/)") or ""
+
 M.config = {
-    bemenu_opts = 'BEMENU_OPTS=\'--tf "#7e5edc" --hf "#7e5edc" --bdr "#7e5edc" -l 10 -p emoji -c -W 0.4 -B 4 --fn "Monospace 25"\'',
-    bemoji_opts = '-tnc -f ~/.config/awesome/common/emoji_selector/emojis.txt',
-    bemoji_picker_cmd = 'BEMOJI_PICKER_CMD=bemenu'
+    prompt = "emoji",
+    bemoji_opts = { "-tnc" }, -- -t type the emoji, -n no newline, -c copy to clipboard
+    emoji_file = dir .. "emojis.txt",
 }
 
--- Initialize emoji selector with custom configuration
+-- Customize the configuration
 function M.setup(user_config)
-    if user_config then
-        for k, v in pairs(user_config) do
-            M.config[k] = v
-        end
+    for k, v in pairs(user_config or {}) do
+        M.config[k] = v
     end
 end
 
--- Launch emoji selector
+-- Launch the emoji selector
 function M.open()
-    local cmd = string.format("%s %s bemoji %s", 
-        M.config.bemenu_opts, 
-        M.config.bemoji_picker_cmd, 
-        M.config.bemoji_opts)
-    
-    awful.spawn.with_shell(cmd)
+    local c = M.config
+    -- bemoji splits BEMOJI_PICKER_CMD on whitespace, so no argument (including
+    -- the theme path) may contain spaces
+    -- -sync: read the whole list before showing the window, otherwise it opens
+    -- empty and grows a frame later
+    local picker = table.concat(rofi.command(), " ") .. " -dmenu -sync -i -p " .. c.prompt
+    local cmd = { "env", "BEMOJI_PICKER_CMD=" .. picker, "bemoji" }
+    for _, opt in ipairs(c.bemoji_opts) do
+        table.insert(cmd, opt)
+    end
+    table.insert(cmd, "-f")
+    table.insert(cmd, c.emoji_file)
+    awful.spawn(cmd, false)
 end
 
 -- Create a keybinding for the emoji selector
 function M.create_keybinding(modifiers, key, description)
-    description = description or "type emoji"
-    modifiers = modifiers or { "Mod4" }
-    key = key or "e"
-    
-    return awful.key(
-        modifiers, key, 
-        function() M.open() end, 
-        { description = description, group = "misc" }
-    )
+    return awful.key(modifiers or { "Mod4" }, key or "e", M.open,
+        { description = description or "type emoji", group = "misc" })
 end
 
 return M

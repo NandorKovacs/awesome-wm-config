@@ -1,4 +1,4 @@
--- Audio output switcher, rofi variant: a wibar widget showing the default
+-- Audio output switcher: a wibar widget showing the default
 -- output and its volume, plus a rofi menu (menu.sh) using the shared rofi
 -- look from common.rofi.
 --
@@ -224,8 +224,8 @@ end
 
 -- Create a keybinding that opens the menu
 function M.create_keybinding(modifiers, key, description)
-    return awful.key(modifiers or { "Mod4", "Shift" }, key or "a", M.toggle,
-        { description = description or "audio output menu (rofi)", group = "media" })
+    return awful.key(modifiers or { "Mod4" }, key or "a", M.toggle,
+        { description = description or "audio output menu", group = "media" })
 end
 
 return M
