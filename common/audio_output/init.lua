@@ -20,6 +20,7 @@ local dir = debug.getinfo(1, "S").source:match("^@(.*/)") or ""
 M.config = {
     prompt = "output",
     step = 5,                 -- volume change per key press / scroll step, in percent
+    invert_scroll = false,    -- scrolling down on the wibar widget raises the volume
     max_volume = 100,
     bar_cells = 10,
     menu_name_length = 32,    -- max characters of an output name in the menu
@@ -202,6 +203,15 @@ function M.setup(user_config)
     end
 end
 
+-- Scroll on the wibar widget, direction 1 (up) or -1 (down). Does nothing
+-- while the output is muted.
+local function scroll(direction)
+    local s = default_sink()
+    if not s or s.muted then return end
+    if M.config.invert_scroll then direction = -direction end
+    set_volume(s, s.volume + direction * M.config.step)
+end
+
 -- Wibar widget: click opens the menu, right click mutes, scroll changes volume
 function M.widget()
     if bar_widget then return bar_widget end
@@ -209,14 +219,8 @@ function M.widget()
     bar_widget:buttons(gears.table.join(
         awful.button({}, 1, M.toggle),
         awful.button({}, 3, function() toggle_mute(default_sink()) end),
-        awful.button({}, 4, function()
-            local s = default_sink()
-            if s then set_volume(s, s.volume + M.config.step) end
-        end),
-        awful.button({}, 5, function()
-            local s = default_sink()
-            if s then set_volume(s, s.volume - M.config.step) end
-        end)))
+        awful.button({}, 4, function() scroll(1) end),
+        awful.button({}, 5, function() scroll(-1) end)))
     subscribe()
     refresh()
     return bar_widget
