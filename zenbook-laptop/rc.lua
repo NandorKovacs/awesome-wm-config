@@ -19,6 +19,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 local battery = require("common/battery/battery")
 local emoji_selector = require("common.emoji_selector")
+local audio_output = require("common.audio_output")
 local toggle_monitor = require("toggle_monitor")
 
 -- local p_widget = require("powerprofile")
@@ -231,6 +232,8 @@ awful.screen.connect_for_each_screen(function(s)
     {             -- Right widgets
       layout = wibox.layout.fixed.horizontal,
       wibox.widget.textbox("  "),
+      audio_output.widget(),
+      wibox.widget.textbox(" | "),
       wibox.widget.systray(),
       wibox.widget.textbox(" | "),
       toggle_monitor.widget,
@@ -355,7 +358,8 @@ globalkeys = gears.table.join(
   awful.key({}, "Print", function() awful.spawn("flameshot gui") end),
   awful.key({ modkey, }, "BackSpace", function() awful.spawn("systemctl suspend") end,
     { description = "lock screen", group = "awesome" }),
-  emoji_selector.create_keybinding({ modkey }, "e", "select emoji")
+  emoji_selector.create_keybinding({ modkey }, "e", "select emoji"),
+  audio_output.create_keybinding({ modkey }, "b", "audio output menu")
 )
 
 clientkeys = gears.table.join(
