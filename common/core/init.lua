@@ -31,8 +31,7 @@ return function(host)
     awful.screen.set_auto_dpi_enabled(true)
   end
 
-  -- what the sections hand to each other: mainmenu, launcher, clientkeys,
-  -- clientbuttons
+  -- what the sections hand to each other: mainmenu, launcher
   local ctx = { settings = cfg }
 
   require("common.core.errors")(cfg, ctx)

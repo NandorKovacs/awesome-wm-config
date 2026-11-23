@@ -10,10 +10,22 @@ return function(cfg)
   end
   beautiful.init(theme)
 
-  -- awesome 4.3 only knows the assignment; newer versions warn about it
-  if awful.layout.append_default_layouts then
+  -- Table of layouts to cover with awful.layout.inc, order matters.
+  tag.connect_signal("request::default_layouts", function()
     awful.layout.append_default_layouts(cfg.layouts)
-  else
-    awful.layout.layouts = cfg.layouts
-  end
+  end)
+
+  -- Also emitted when a screen's geometry changes (e.g. different resolution)
+  screen.connect_signal("request::wallpaper", function(s)
+    local wallpaper = cfg.wallpaper or beautiful.wallpaper
+    -- If wallpaper is a function, call it with the screen
+    if type(wallpaper) == "function" then
+      wallpaper = wallpaper(s)
+    end
+    -- not awful.wallpaper: its imagebox cannot draw the recording surfaces
+    -- that the themes generate
+    if wallpaper then
+      gears.wallpaper.maximized(wallpaper, s, cfg.wallpaper_ignore_aspect)
+    end
+  end)
 end

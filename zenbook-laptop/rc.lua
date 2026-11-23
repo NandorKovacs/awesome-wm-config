@@ -3,8 +3,11 @@
 pcall(require, "luarocks.loader")
 
 local beautiful = require("beautiful")
+local audio_output = require("common.audio_output")
 local battery = require("common.battery.battery")
 local toggle_monitor = require("toggle_monitor")
+
+audio_output.setup { invert_scroll = true }
 
 -- Only what differs on this machine; the rest is common/core/defaults.lua.
 require("common.core") {
@@ -42,7 +45,7 @@ require("common.core") {
   end,
 
   keys = {
-    { {}, "F7", function() toggle_monitor.toggle() end,
-      { description = "toggle monitor", group = "awesome" } },
+    { modifiers = {}, key = "F7", on_press = function() toggle_monitor.toggle() end,
+      description = "toggle monitor", group = "awesome" },
   },
 }

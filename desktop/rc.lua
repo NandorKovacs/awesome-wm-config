@@ -9,8 +9,6 @@ require("common.core") {
   theme = "gtk",
   terminal = "konsole",
   auto_dpi = true,
-  media_keys = true,
-  new_clients_as_slave = true,
   wallpaper_ignore_aspect = true,
   autostart = { "flameshot" },
 
