@@ -48,5 +48,8 @@ require("common.core") {
     -- the lower display key of the keyboard, sent by duo-keyd
     { modifiers = {}, key = "XF86Display", on_press = function() toggle_monitor.toggle() end,
       description = "toggle monitor", group = "awesome" },
+    -- Fn+F7: a plain key, so it also works without duo-keyd (over Bluetooth)
+    { modifiers = {}, key = "F7", on_press = function() toggle_monitor.toggle() end,
+      description = "toggle monitor", group = "awesome" },
   },
 }
