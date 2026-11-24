@@ -7,6 +7,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 local bind = require("common.core.bind")
 local emoji_selector = require("common.emoji_selector")
 local audio_output = require("common.audio_output")
+local brightness = require("common.brightness")
 local media_keys = require("common.media_keys")
 
 local function global_keys(cfg, ctx)
@@ -45,6 +46,10 @@ local function global_keys(cfg, ctx)
       description = "select emoji", group = "misc" },
     { modifiers = { modkey }, key = "b", on_press = audio_output.toggle,
       description = "audio output menu", group = "media" },
+    { modifiers = {}, key = "XF86MonBrightnessUp", on_press = brightness.up,
+      description = "brightness up", group = "screen" },
+    { modifiers = {}, key = "XF86MonBrightnessDown", on_press = brightness.down,
+      description = "brightness down", group = "screen" },
 
     -- Tags related keybindings
     { modifiers = { modkey }, key = "Left", on_press = awful.tag.viewprev,
