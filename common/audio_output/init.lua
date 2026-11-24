@@ -24,7 +24,7 @@ M.config = {
     max_volume = 100,
     bar_cells = 10,
     menu_name_length = 32,    -- max characters of an output name in the menu
-    bar_name_length = 28,     -- max characters of the output name shown in the wibar
+    bar_name_length = 17,     -- max characters of the output name shown in the wibar
     script = dir .. "menu.sh",
     key_volume_down = "Left",
     key_volume_up = "Right",
@@ -34,6 +34,7 @@ M.config = {
 local sinks = {}              -- { name, description, volume, muted }
 local default_name
 local bar_widget
+local bar_tooltip             -- shows the output name in full
 local menu_pid
 
 local escape = (gears.string and gears.string.xml_escape) or awful.util.escape
@@ -72,13 +73,15 @@ local function update_bar()
     local s = default_sink()
     if not s then
         bar_widget.markup = "no output"
+        bar_tooltip.text = "no output"
         return
     end
     local name = s.description or s.name
+    local state = s.muted and "muted" or (s.volume .. "%")
+    bar_tooltip.text = name .. " " .. state
     if #name > M.config.bar_name_length then
         name = name:sub(1, M.config.bar_name_length - 1) .. "…"
     end
-    local state = s.muted and "muted" or (s.volume .. "%")
     bar_widget.markup = escape(name .. " " .. state)
 end
 
@@ -212,10 +215,12 @@ local function scroll(direction)
     set_volume(s, s.volume + direction * M.config.step)
 end
 
--- Wibar widget: click opens the menu, right click mutes, scroll changes volume
+-- Wibar widget: click opens the menu, right click mutes, scroll changes
+-- volume, hovering shows the untruncated text
 function M.widget()
     if bar_widget then return bar_widget end
     bar_widget = wibox.widget.textbox("…")
+    bar_tooltip = awful.tooltip { objects = { bar_widget }, text = "…" }
     bar_widget:buttons(gears.table.join(
         awful.button({}, 1, M.toggle),
         awful.button({}, 3, function() toggle_mute(default_sink()) end),
