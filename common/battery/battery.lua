@@ -3,6 +3,7 @@ local awful = require("awful")
 local gears = require("gears")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
+local was_low
 local function worker(widget, stdout)
   local status, percentnum
   for line in stdout:gmatch("[^\r\n]+") do
@@ -15,7 +16,7 @@ local function worker(widget, stdout)
   if not status then return end
   local percent = percentnum .. "%"
   local purple = "#7e5edc"
-  local red = "#c3512a"
+  local red = "#e05561"
   local black = "#000000"
   local low = false
   if status == "Discharging" then
@@ -44,6 +45,19 @@ local function worker(widget, stdout)
   
   if client.focus then
     client.focus.border_color = beautiful.border_focus
+  end
+
+  -- the other highlights of the focused client; nil is the theme's colour.
+  -- Not the taglist: red there would clash with the urgent tags
+  if low ~= was_low then
+    was_low = low
+    local highlight = low and red or nil
+    beautiful.tasklist_bg_focus = highlight
+    beautiful.titlebar_bg_focus = highlight
+    -- nothing redraws these when the theme changes, so emit what they listen to
+    if client.focus then
+      client.focus:emit_signal("property::active")
+    end
   end
   widget:set_text(percent)  
 end
