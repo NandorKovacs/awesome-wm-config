@@ -68,6 +68,17 @@ local function parse(stdout)
     return list
 end
 
+-- Cut a UTF-8 string down to `max` characters, the last one an ellipsis.
+-- Counts characters, not bytes, like menu.sh.
+local function truncate(text, max)
+    local chars = {}
+    for char in text:gmatch("[^\128-\191][\128-\191]*") do
+        table.insert(chars, char)
+    end
+    if #chars <= max then return text end
+    return table.concat(chars, "", 1, max - 1) .. "…"
+end
+
 local function update_bar()
     if not bar_widget then return end
     local s = default_sink()
@@ -79,10 +90,7 @@ local function update_bar()
     local name = s.description or s.name
     local state = s.muted and "muted" or (s.volume .. "%")
     bar_tooltip.text = name .. " " .. state
-    if #name > M.config.bar_name_length then
-        name = name:sub(1, M.config.bar_name_length - 1) .. "…"
-    end
-    bar_widget.markup = escape(name .. " " .. state)
+    bar_widget.markup = escape(truncate(name, M.config.bar_name_length) .. " " .. state)
 end
 
 local function refresh()

@@ -120,9 +120,10 @@ for i in "${!names[@]}"; do
     # The row text is the plain name, which is what typing filters on; what is
     # shown is the "display" markup. Muted rows are flagged "urgent"; the theme
     # draws those dimmed.
-    esc=${desc//&/&amp;}
-    esc=${esc//</&lt;}
-    esc=${esc//>/&gt;}
+    # \&: since bash 5.2 a bare & in the replacement is the matched text
+    esc=${desc//&/\&amp;}
+    esc=${esc//</\&lt;}
+    esc=${esc//>/\&gt;}
     printf '%s\0info\x1f%s\x1furgent\x1f%s\x1fdisplay\x1f%s%s%s  <span background="%s">%s</span>%s\n' \
         "$desc" "${names[i]}" "$urgent" \
         "$marker" "$esc" "$padding" "$track" "$bar" "$label"
