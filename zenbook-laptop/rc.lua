@@ -13,6 +13,7 @@ audio_output.setup { invert_scroll = true }
 require("common.core") {
   terminal = "kgx",
   lock_cmd = "systemctl suspend",
+  keyboard_layouts = { "us2" },
 
   wibar_right = function(s, w)
     return {
@@ -26,7 +27,6 @@ require("common.core") {
       toggle_monitor.widget,
       w.sep,
       battery,
-      w.keyboard,
       w.clock,
       w.layoutbox,
     }

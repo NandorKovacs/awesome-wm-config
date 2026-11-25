@@ -48,10 +48,14 @@ return {
   end,
   wallpaper_ignore_aspect = false,        -- stretch it to the screen instead of cropping it
 
+  -- Names of keyboard layouts that are not part of xkeyboard-config. The
+  -- keyboard widget shows nothing for a layout it does not know.
+  keyboard_layouts = {},
+
   -- Right side of the wibar, in order. w holds the shared widgets built for
   -- screen s: pad, sep, audio, systray, keyboard, clock, layoutbox.
   wibar_right = function(s, w)
-    return { w.pad, w.systray, w.sep, w.audio, w.sep, w.keyboard, w.clock, w.layoutbox }
+    return { w.pad, w.systray, w.sep, w.audio, w.sep, w.clock, w.layoutbox }
   end,
 
   -- Key rows (argument tables of awful.key) added to the shared ones. A row

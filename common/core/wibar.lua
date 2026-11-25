@@ -6,7 +6,7 @@ return function(cfg, ctx)
   local modkey = cfg.modkey
 
   -- Keyboard map indicator and switcher
-  local keyboardlayout = awful.widget.keyboardlayout()
+  local keyboardlayout = awful.widget.keyboardlayout { country_codes = cfg.keyboard_layouts }
 
   -- Create a textclock widget
   local textclock = wibox.widget.textclock()
