@@ -1,15 +1,20 @@
 -- Audio output switcher: a wibar widget showing the default
 -- output and its volume, plus a rofi menu (menu.sh) using the shared rofi
--- look from common.rofi.
+-- look from common.rofi. Changing the volume or the mute of the default
+-- output with the keys or on the wibar widget shows it in a popup (see
+-- common.osd).
 --
 -- Menu keys: Up/Down select, Left/Right change that output's volume,
 -- Alt+m mute, Enter make default, Escape close. Typing filters the list.
 --
--- Requires rofi. Colours, font and size live in common/rofi/theme.rasi.
+-- Requires pactl and rofi. The menu's colours, font and size live in
+-- common/rofi/theme.rasi. The icons are Material Symbols: volume_up and
+-- volume_off.
 
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
+local osd = require("common.osd")
 local rofi = require("common.rofi")
 
 local M = {}
@@ -29,6 +34,11 @@ M.config = {
     key_volume_down = "Left",
     key_volume_up = "Right",
     key_mute = "Alt+m",
+    osd = true,               -- show the popup
+    icons = {
+        on = dir .. "volume_up.svg",
+        muted = dir .. "volume_off.svg",
+    },
 }
 
 local sinks = {}              -- { name, description, volume, muted }
@@ -102,11 +112,23 @@ local function refresh()
         end)
 end
 
+-- A muted output keeps its bar, greyed.
+local function show_osd(s)
+    if not M.config.osd then return end
+    osd.show {
+        icon = M.config.icons[s.muted and "muted" or "on"],
+        value = s.volume,
+        max = M.config.max_volume,
+        dimmed = s.muted,
+    }
+end
+
 local function set_volume(s, volume)
     if not s then return end
     s.volume = math.max(0, math.min(M.config.max_volume, volume))
     awful.spawn({ "pactl", "set-sink-volume", s.name, s.volume .. "%" }, false)
     update_bar()
+    show_osd(s)
 end
 
 local function toggle_mute(s)
@@ -114,6 +136,23 @@ local function toggle_mute(s)
     s.muted = not s.muted
     awful.spawn({ "pactl", "set-sink-mute", s.name, s.muted and "1" or "0" }, false)
     update_bar()
+    show_osd(s)
+end
+
+-- The volume and mute keys act on the default output. Unlike scrolling on
+-- the wibar widget, they also change the volume of a muted output.
+function M.volume_up()
+    local s = default_sink()
+    if s then set_volume(s, s.volume + M.config.step) end
+end
+
+function M.volume_down()
+    local s = default_sink()
+    if s then set_volume(s, s.volume - M.config.step) end
+end
+
+function M.toggle_mute()
+    toggle_mute(default_sink())
 end
 
 function M.close()

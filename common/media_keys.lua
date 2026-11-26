@@ -1,9 +1,10 @@
 -- Media keys (keyboard, Bluetooth AVRCP and USB headset buttons) -> MPRIS and
--- the default audio sink, as key rows for common.core.
+-- the default audio output, as key rows for common.core.
 --
--- Requires playerctl and wpctl.
+-- Requires playerctl; the volume keys go through common.audio_output.
 
 local awful = require("awful")
+local audio_output = require("common.audio_output")
 
 return {
   -- Bluetooth headsets send Play and Pause as separate keys; both toggle.
@@ -19,13 +20,10 @@ return {
   { modifiers = {}, key = "XF86AudioPrev",
     on_press = function() awful.spawn("playerctl previous", false) end,
     description = "previous track", group = "media" },
-  { modifiers = {}, key = "XF86AudioRaiseVolume",
-    on_press = function() awful.spawn("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+", false) end,
+  { modifiers = {}, key = "XF86AudioRaiseVolume", on_press = audio_output.volume_up,
     description = "volume up", group = "media" },
-  { modifiers = {}, key = "XF86AudioLowerVolume",
-    on_press = function() awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-", false) end,
+  { modifiers = {}, key = "XF86AudioLowerVolume", on_press = audio_output.volume_down,
     description = "volume down", group = "media" },
-  { modifiers = {}, key = "XF86AudioMute",
-    on_press = function() awful.spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle", false) end,
+  { modifiers = {}, key = "XF86AudioMute", on_press = audio_output.toggle_mute,
     description = "mute/unmute", group = "media" },
 }

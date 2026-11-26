@@ -1,17 +1,24 @@
 -- Screen brightness through logind, which lets the active session set it
--- without root or group membership.
+-- without root or group membership. While it is changed, a popup shows the
+-- level (see common.osd).
 --
--- Requires busctl (systemd).
+-- Requires busctl (systemd). The icon is the Material Symbol light_mode.
 
 local awful = require("awful")
+local osd = require("common.osd")
 
 local M = {}
+
+-- directory of this module, with trailing slash
+local dir = debug.getinfo(1, "S").source:match("^@(.*/)") or ""
 
 M.config = {
     -- names in /sys/class/backlight, changed together; missing ones are skipped
     devices = { "intel_backlight" },
     step = 5,                 -- levels are the multiples of this, in percent of the maximum
     min = 1,                  -- lower limit in percent; 0 turns an OLED panel black
+    osd = true,               -- show the popup
+    icon = dir .. "light_mode.svg",
 }
 
 -- device -> { value = newest value asked for, calls = busctl calls still running }
@@ -85,6 +92,7 @@ local function set(device, value)
 end
 
 local function change(direction)
+    local level               -- of the first device, in percent
     for _, device in ipairs(M.config.devices) do
         local sys = "/sys/class/backlight/" .. device .. "/"
         local max = read_number(sys .. "max_brightness")
@@ -94,7 +102,12 @@ local function change(direction)
             if value ~= current then
                 set(device, value)
             end
+            level = level or value * 100 / max
         end
+    end
+    -- also at a limit, where nothing changes
+    if level and M.config.osd then
+        osd.show { icon = M.config.icon, value = level }
     end
 end
 
